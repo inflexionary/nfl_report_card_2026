@@ -7,34 +7,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --border: #1e1e2e;
-    --text: #e8e8f0;
-    --muted: #6b6b80;
-    --accent: #f0b429;
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --surface2: #f0f0eb;
+    --border: #ddddd8;
+    --text: #1a1a24;
+    --muted: #7a7a8a;
+    --accent: #c47800;
+    --accent-light: #fff3dc;
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+  /* ── DESKTOP: fixed viewport layout ── */
+  @media (min-width: 769px) {
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+    body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    #chrome { flex-shrink: 0; }
+    #scroll-area { flex: 1; overflow: auto; padding: 0 28px 28px; }
+    #mobile-note { display: none; }
+  }
 
-  body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  /* ── MOBILE: natural scroll ── */
+  @media (max-width: 768px) {
+    html, body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+    body { display: block; }
+    #scroll-area { padding: 0 12px 40px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #desktop-table { display: none; }
+    #mobile-note { display: block; }
+  }
 
-  /* non-scrolling top chrome */
-  #chrome { flex-shrink: 0; }
-
+  /* ── HEADER ── */
   header {
-    padding: 20px 32px 14px;
-    border-bottom: 1px solid var(--border);
+    padding: 16px 28px 12px;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface);
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   }
   header h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(22px, 3vw, 44px);
+    font-size: clamp(20px, 3vw, 40px);
     letter-spacing: 2px;
     color: var(--accent);
     line-height: 1;
@@ -43,54 +60,61 @@
 
   .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .sort-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  select { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 6px 12px; border-radius: 4px; cursor: pointer; outline: none; }
+  select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+  }
   select:hover { border-color: var(--accent); }
 
+  /* ── LEGEND ── */
   .legend {
     display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
-    padding: 7px 32px; border-bottom: 1px solid var(--border);
+    padding: 7px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
   }
   .legend-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 6px; }
-  .legend-item { display: flex; align-items: center; gap: 3px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
-  .legend-swatch { width: 18px; height: 12px; border-radius: 2px; }
-  .legend-hint { margin-left: 12px; font-family: 'DM Mono', monospace; font-size: 10px; color: #444; }
+  .legend-item { display: flex; align-items: center; gap: 3px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text); }
+  .legend-swatch { width: 18px; height: 12px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.08); }
 
-  /* THE KEY FIX: scroll container takes remaining height, thead sticks at top:0 of this element */
-  #scroll-area {
-    flex: 1;
-    overflow: auto;
-    padding: 0 32px 32px;
-  }
-
-  table { border-collapse: collapse; table-layout: fixed; }
+  /* ── TABLE ── */
+  table { border-collapse: collapse; table-layout: fixed; background: var(--surface); }
 
   thead th {
     position: sticky;
     top: 0;
-    background: var(--bg);
+    background: var(--surface);
     z-index: 10;
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--muted);
-    padding: 6px 4px;
+    padding: 5px 3px;
     text-align: center;
     vertical-align: bottom;
     cursor: pointer;
     white-space: nowrap;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 1px 0 var(--border);
   }
   thead th:hover { color: var(--accent); }
 
-  /* team column header: sticky left AND top */
   thead th.team-header {
     text-align: left;
     position: sticky;
     left: 0;
     z-index: 20;
     padding-left: 0;
-    min-width: 185px;
+    min-width: 200px;
+    background: var(--surface);
   }
 
   .col-header-inner {
@@ -103,12 +127,17 @@
     padding: 4px 0;
   }
 
-  tbody tr:hover td.team-cell { color: var(--accent) !important; background: var(--bg) !important; }
-  tbody tr:hover td.rank-cell { opacity: 0.7; }
+  tbody tr { transition: background 0.1s; }
+  tbody tr:hover { background: #fffbf0; }
+  tbody tr:hover td.team-cell { color: var(--accent) !important; background: #fffbf0 !important; }
+  tbody tr:hover { border-left: 3px solid var(--accent); }
   tbody tr { border-left: 3px solid transparent; }
-  tbody tr:hover { border-left: 3px solid rgba(240,180,41,0.5); }
 
-  td { padding: 3px; text-align: center; border: 1px solid rgba(255,255,255,0.04); }
+  td {
+    padding: 3px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
 
   td.team-cell {
     font-family: 'DM Mono', monospace;
@@ -116,13 +145,27 @@
     font-weight: 500;
     color: var(--text);
     text-align: left;
-    padding: 4px 14px 4px 0;
+    padding: 3px 10px 3px 0;
     white-space: nowrap;
     position: sticky;
     left: 0;
-    background: var(--bg);
+    background: var(--surface);
     z-index: 5;
-    border-right: 1px solid var(--border);
+    border-right: 2px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  .team-inner {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .team-logo {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    object-fit: contain;
   }
 
   .rank-cell {
@@ -131,16 +174,17 @@
     letter-spacing: 1px;
     width: 36px;
     min-width: 36px;
+    background: var(--surface2);
   }
 
   .grade-cell {
-    width: 42px;
-    min-width: 42px;
-    height: 30px;
+    width: 40px;
+    min-width: 40px;
+    height: 29px;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     font-weight: 500;
-    border-radius: 3px;
+    border-radius: 2px;
     cursor: default;
     transition: transform 0.1s, box-shadow 0.1s;
     position: relative;
@@ -148,32 +192,144 @@
   .grade-cell:hover {
     transform: scale(1.28);
     z-index: 50;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    outline: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 3px 14px rgba(0,0,0,0.25);
+    outline: 2px solid rgba(0,0,0,0.35);
     outline-offset: 1px;
   }
 
-  /* tooltip */
+  /* ── TOOLTIP ── */
   #tooltip {
     display: none;
     position: fixed;
-    background: #16162a;
-    border: 1px solid #2a2a40;
-    border-radius: 7px;
-    padding: 10px 14px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 15px;
     font-family: 'DM Mono', monospace;
     pointer-events: none;
     z-index: 9999;
-    max-width: 290px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    max-width: 300px;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.18);
   }
   #tooltip .tip-title  { color: var(--accent); font-size: 12px; font-weight: 500; margin-bottom: 2px; }
   #tooltip .tip-sub    { color: var(--muted); font-size: 10px; margin-bottom: 2px; }
   #tooltip .tip-grade  { font-size: 22px; font-weight: 500; margin: 4px 0 2px; }
-  #tooltip .tip-desc   { color: #aaa; font-size: 10px; line-height: 1.5; margin-top: 4px; white-space: normal; }
-  #tooltip .tip-divider { border: none; border-top: 1px solid #2a2a40; margin: 8px 0; }
-  #tooltip .tip-comment { color: #c8c8e0; font-size: 10px; line-height: 1.6; white-space: normal; font-style: italic; }
-  #tooltip .tip-source  { color: #484860; font-size: 9px; margin-top: 4px; }
+  #tooltip .tip-desc   { color: #555; font-size: 10px; line-height: 1.5; margin-top: 4px; white-space: normal; }
+  #tooltip .tip-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  #tooltip .tip-comment { color: #333; font-size: 10px; line-height: 1.6; white-space: normal; font-style: italic; }
+  #tooltip .tip-source  { color: #aaa; font-size: 9px; margin-top: 4px; }
+
+  /* ── MOBILE CARDS ── */
+  #mobile-note {
+    padding: 12px 16px;
+    background: var(--accent-light);
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  #mobile-view { padding: 12px; }
+
+  .mobile-sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .team-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .team-card-header:active { background: var(--surface2); }
+
+  .mobile-team-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .team-card-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .team-card-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
+  .card-chevron {
+    font-size: 12px;
+    color: var(--muted);
+    transition: transform 0.25s;
+  }
+  .team-card.expanded .card-chevron { transform: rotate(180deg); }
+
+  .team-card-grades {
+    display: none;
+    padding: 12px 14px;
+    background: var(--surface2);
+  }
+  .team-card.expanded .team-card-grades { display: block; }
+
+  .mobile-grade-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 13px;
+  }
+  .mobile-grade-row:last-child { border-bottom: none; }
+  .mobile-cat-name {
+    color: var(--muted);
+    font-size: 12px;
+    flex: 1;
+  }
+  .mobile-grade-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 4px;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  /* Swipe hint */
+  .swipe-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    padding: 8px;
+    letter-spacing: 1px;
+  }
 </style>
 </head>
 <body>
@@ -211,58 +367,69 @@
 
   <div class="legend">
     <span class="legend-label">Grade →</span>
-    <div class="legend-item"><div class="legend-swatch" style="background:#00c853"></div>A+</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#43d156"></div>A</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#7ddc5f"></div>A−</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#b4e868"></div>B+</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#d4ed6a"></div>B</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f0e96b"></div>B−</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f7ce55"></div>C+</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f7ae40"></div>C</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f78c30"></div>C−</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f06020"></div>D+</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#e83f10"></div>D</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#d42008"></div>D−</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#b00000"></div>F</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#700000"></div>F−</div>
-    <span class="legend-hint">· Hover columns or cells for details · Click column to sort</span>
+    <div class="legend-item"><div class="legend-swatch" style="background:#22a85a"></div>A+</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#3dba6a"></div>A</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#6ecf7e"></div>A−</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#a8e078"></div>B+</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ccec6c"></div>B</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e8ed5a"></div>B−</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#f5d248"></div>C+</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#f5b030"></div>C</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#f08020"></div>C−</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e85c18"></div>D+</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#d83a10"></div>D</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#c42008"></div>D−</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#a81000"></div>F</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#7a0000"></div>F−</div>
   </div>
 </div>
 
+<!-- MOBILE NOTE -->
+<div id="mobile-note">📱 Tap a team card to expand grades</div>
+
+<!-- DESKTOP TABLE -->
 <div id="scroll-area">
-  <table id="heatTable">
-    <thead><tr id="headerRow"></tr></thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+  <div id="desktop-table">
+    <table id="heatTable">
+      <thead><tr id="headerRow"></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 </div>
 
+<!-- MOBILE CARDS VIEW -->
+<div id="mobile-view"></div>
+
+<!-- TOOLTIP -->
 <div id="tooltip">
   <div class="tip-title" id="tipTitle"></div>
-  <div class="tip-sub"   id="tipSub"></div>
+  <div class="tip-sub" id="tipSub"></div>
   <div class="tip-grade" id="tipGrade"></div>
-  <div class="tip-desc"  id="tipDesc"></div>
-  <hr  class="tip-divider" id="tipDivider" style="display:none">
+  <div class="tip-desc" id="tipDesc"></div>
+  <hr class="tip-divider" id="tipDivider">
   <div class="tip-comment" id="tipComment"></div>
-  <div class="tip-source"  id="tipSource"></div>
+  <div class="tip-source" id="tipSource"></div>
 </div>
 
 <script>
-const GRADE_ORDER = ['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F','F-'];
-
+// ── GRADE COLOURS (light-mode: dark text on light backgrounds) ────────────────
 const GC = {
-  'A+':'#00c853','A':'#43d156','A-':'#7ddc5f',
-  'B+':'#b4e868','B':'#d4ed6a','B-':'#f0e96b',
-  'C+':'#f7ce55','C':'#f7ae40','C-':'#f78c30',
-  'D+':'#f06020','D':'#e83f10','D-':'#d42008',
-  'F':'#b00000','F-':'#700000'
+  'A+': '#22a85a','A': '#3dba6a','A-': '#6ecf7e',
+  'B+': '#a8e078','B': '#ccec6c','B-': '#e8ed5a',
+  'C+': '#f5d248','C': '#f5b030','C-': '#f08020',
+  'D+': '#e85c18','D': '#d83a10','D-': '#c42008',
+  'F':  '#a81000','F-': '#7a0000','—': '#e8e8e4'
+};
+// Text colour per grade (dark/light contrast)
+const GT = {
+  'A+': '#0a3d1e','A': '#0a3d1e','A-': '#0a3d1e',
+  'B+': '#1a3a00','B': '#1a3a00','B-': '#1a3800',
+  'C+': '#3a2800','C': '#3a2000','C-': '#3a1800',
+  'D+': '#ffffff','D': '#ffffff','D-': '#ffffff',
+  'F':  '#ffffff','F-': '#ffffff','—': '#888'
 };
 
-const GT = {
-  'A+':'#002800','A':'#002800','A-':'#003000',
-  'B+':'#182000','B':'#182000','B-':'#222000',
-  'C+':'#321800','C':'#321000','C-':'#320800',
-  'D+':'#fff','D':'#fff','D-':'#fff','F':'#fff','F-':'#fff'
-};
+const GRADE_ORDER = ['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F','F-'];
 
 const CATS = [
   'Treatment of Families','Home Game Field','Food/Dining Area','Nutritionist/Dietician',
@@ -270,117 +437,111 @@ const CATS = [
   'Position Coaches','Offensive Coordinator','Defensive Coordinator','Special Teams Coordinator',
   'Team Travel','Head Coach','General Manager','Team Ownership'
 ];
-
 const SHORT = {
-  'Treatment of Families':'Families','Home Game Field':'Field','Food/Dining Area':'Food',
-  'Nutritionist/Dietician':'Nutritionist','Locker Room':'Locker Rm','Training Room':'Training Rm',
-  'Training Staff':'Train. Staff','Weight Room':'Weight Rm','Strength Coaches':'Str. Coaches',
-  'Position Coaches':'Pos. Coaches','Offensive Coordinator':'Off. Coord',
-  'Defensive Coordinator':'Def. Coord','Special Teams Coordinator':'ST Coord',
-  'Team Travel':'Travel','Head Coach':'Head Coach','General Manager':'GM','Team Ownership':'Ownership'
+  'Treatment of Families':'Families','Home Game Field':'Home Field','Food/Dining Area':'Food',
+  'Nutritionist/Dietician':'Nutrition','Locker Room':'Locker Rm','Training Room':'Training Rm',
+  'Training Staff':'Train Staff','Weight Room':'Weight Rm','Strength Coaches':'Strength',
+  'Position Coaches':'Position Cch','Offensive Coordinator':'Off Coord','Defensive Coordinator':'Def Coord',
+  'Special Teams Coordinator':'ST Coord','Team Travel':'Travel','Head Coach':'Head Coach',
+  'General Manager':'GM','Team Ownership':'Ownership'
 };
-
 const DESC = {
-  'Treatment of Families':"How the franchise treats players' families — access to facilities, hospitality, communication during games and travel.",
-  'Home Game Field':"Quality and maintenance of the home game playing surface, including turf type, upkeep, and safety.",
-  'Food/Dining Area':"Quality, variety, and nutritional value of food available at the team facility throughout the week.",
-  'Nutritionist/Dietician':"Availability, expertise, and day-to-day support from the team's nutrition and dietary staff.",
-  'Locker Room':"Space, condition, amenities, and overall upkeep of the team locker room at the facility.",
-  'Training Room':"Quality of the medical and athletic training room, including equipment, cleanliness, and resources.",
-  'Training Staff':"Competence, availability, and quality of care from athletic trainers and medical personnel.",
-  'Weight Room':"Quality, equipment selection, maintenance, and overall environment of the weight and fitness room.",
-  'Strength Coaches':"Effectiveness, communication, and expertise of the strength & conditioning coaching staff.",
-  'Position Coaches':"Quality and effectiveness of position-specific coaching — preparation, feedback, and player development.",
-  'Offensive Coordinator':"Players' rating of the offensive coordinator's scheme, communication, and in-game adjustments.",
-  'Defensive Coordinator':"Players' rating of the defensive coordinator's scheme, communication, and in-game adjustments.",
-  'Special Teams Coordinator':"Players' rating of the special teams coordinator's preparation, scheme, and execution.",
-  'Team Travel':"Quality of travel arrangements — charter flights, hotels, meals on the road, and overall logistics.",
-  'Head Coach':"Overall rating of the head coach's leadership, communication, player relationships, and effectiveness.",
-  'General Manager':"How players rate the GM on roster decisions, contract negotiations, communication, and transparency.",
-  'Team Ownership':"How ownership treats players — respect, investment in facilities and staff, and overall culture."
+  'Treatment of Families':'How the team treats players\' families — family areas, childcare, hospitality during home and away games.',
+  'Home Game Field':'Quality and safety of the home playing surface. F grades mostly reflect artificial turf.',
+  'Food/Dining Area':'Quality of team meals, chef staff, cafeteria, and nutrition options at the facility.',
+  'Nutritionist/Dietician':'Access to and quality of nutrition counselling and personalised dietary support.',
+  'Locker Room':'Size, cleanliness, amenities, and overall quality of the locker room facility.',
+  'Training Room':'Quality of the medical and physical therapy space and its equipment.',
+  'Training Staff':'Quality and attentiveness of athletic trainers and sports medicine staff.',
+  'Weight Room':'Size, equipment quality, and upkeep of the weight and strength training facility.',
+  'Strength Coaches':'Quality, expertise and communication of strength and conditioning coaches.',
+  'Position Coaches':'Quality and communication of the coaches players interact with most directly.',
+  'Offensive Coordinator':'Player rating of the offensive coordinator\'s scheme, communication and development.',
+  'Defensive Coordinator':'Player rating of the defensive coordinator\'s scheme, communication and development.',
+  'Special Teams Coordinator':'Player rating of the special teams coordinator\'s leadership and effectiveness.',
+  'Team Travel':'Quality of team charter flights, hotel accommodations, and road-trip logistics.',
+  'Head Coach':'Player rating of the head coach\'s leadership, communication, and player relations.',
+  'General Manager':'Player rating of the GM\'s roster-building, communication, and investment in the team.',
+  'Team Ownership':'Player rating of ownership\'s commitment, investment, and treatment of the organisation.'
 };
 
+// ── NFL TEAM LOGOS via ESPN CDN ───────────────────────────────────────────────
+const LOGOS = {
+  'Arizona Cardinals':    'https://a.espncdn.com/i/teamlogos/nfl/500/ari.png',
+  'Atlanta Falcons':      'https://a.espncdn.com/i/teamlogos/nfl/500/atl.png',
+  'Baltimore Ravens':     'https://a.espncdn.com/i/teamlogos/nfl/500/bal.png',
+  'Buffalo Bills':        'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png',
+  'Carolina Panthers':    'https://a.espncdn.com/i/teamlogos/nfl/500/car.png',
+  'Chicago Bears':        'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png',
+  'Cincinnati Bengals':   'https://a.espncdn.com/i/teamlogos/nfl/500/cin.png',
+  'Cleveland Browns':     'https://a.espncdn.com/i/teamlogos/nfl/500/cle.png',
+  'Dallas Cowboys':       'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
+  'Denver Broncos':       'https://a.espncdn.com/i/teamlogos/nfl/500/den.png',
+  'Detroit Lions':        'https://a.espncdn.com/i/teamlogos/nfl/500/det.png',
+  'Green Bay Packers':    'https://a.espncdn.com/i/teamlogos/nfl/500/gb.png',
+  'Houston Texans':       'https://a.espncdn.com/i/teamlogos/nfl/500/hou.png',
+  'Indianapolis Colts':   'https://a.espncdn.com/i/teamlogos/nfl/500/ind.png',
+  'Jacksonville Jaguars': 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png',
+  'Kansas City Chiefs':   'https://a.espncdn.com/i/teamlogos/nfl/500/kc.png',
+  'Las Vegas Raiders':    'https://a.espncdn.com/i/teamlogos/nfl/500/lv.png',
+  'LA Chargers':          'https://a.espncdn.com/i/teamlogos/nfl/500/lac.png',
+  'LA Rams':              'https://a.espncdn.com/i/teamlogos/nfl/500/lar.png',
+  'Miami Dolphins':       'https://a.espncdn.com/i/teamlogos/nfl/500/mia.png',
+  'Minnesota Vikings':    'https://a.espncdn.com/i/teamlogos/nfl/500/min.png',
+  'New England Patriots': 'https://a.espncdn.com/i/teamlogos/nfl/500/ne.png',
+  'New Orleans Saints':   'https://a.espncdn.com/i/teamlogos/nfl/500/no.png',
+  'New York Giants':      'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
+  'New York Jets':        'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
+  'Philadelphia Eagles':  'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
+  'Pittsburgh Steelers':  'https://a.espncdn.com/i/teamlogos/nfl/500/pit.png',
+  'San Francisco 49ers':  'https://a.espncdn.com/i/teamlogos/nfl/500/sf.png',
+  'Seattle Seahawks':     'https://a.espncdn.com/i/teamlogos/nfl/500/sea.png',
+  'Tampa Bay Buccaneers': 'https://a.espncdn.com/i/teamlogos/nfl/500/tb.png',
+  'Tennessee Titans':     'https://a.espncdn.com/i/teamlogos/nfl/500/ten.png',
+  'Washington Commanders':'https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png',
+};
 
-// Sourced comments from ESPN/Yahoo Sports reporting on the 2026 NFLPA report cards
-// Keys: "Team Name|Category"
+// ── COMMENTS ─────────────────────────────────────────────────────────────────
 const COMMENTS = {
-  // Pittsburgh Steelers
-  "Pittsburgh Steelers|Locker Room": "Players say the locker room has only five bathroom stalls for the entire team.",
-  "Pittsburgh Steelers|Home Game Field": "Players cite inadequate maintenance and excessive wear from hosting local college and high school games. Finished last by a wide margin.",
-  "Pittsburgh Steelers|Team Ownership": "Art Rooney II ranks last in the league for willingness to invest in facilities — a trend reflected in poor ratings across the board.",
-  "Pittsburgh Steelers|Treatment of Families": "One of five teams cited for poor treatment of families, a category agents say players weigh heavily in free agency decisions.",
-  "Pittsburgh Steelers|Team Travel": "Rated last alongside New England and Philadelphia for travel quality.",
-
-  // Cincinnati Bengals
-  "Cincinnati Bengals|Treatment of Families": "Received an F-, the worst mark in this category. Agents say players are treating this grade as a serious factor when choosing free agency destinations.",
-  "Cincinnati Bengals|Food/Dining Area": "Received an F-, the lowest possible grade. One of only two teams to receive an F- in this category.",
-  "Cincinnati Bengals|Nutritionist/Dietician": "Graded F — the only team in the league to receive a failing grade in this category.",
-  "Cincinnati Bengals|Home Game Field": "Graded D-, one of 10 teams rated D or worse for their playing surface.",
-
-  // Arizona Cardinals
-  "Arizona Cardinals|Team Ownership": "Received an F, the worst ownership grade in the league, dragging the team to 31st overall.",
-  "Arizona Cardinals|Locker Room": "Rated F-, the same failing mark given to the Steelers — one of the most glaring facility concerns in the league.",
+  "Pittsburgh Steelers|Locker Room": "Players report 'only five bathroom stalls for the entire team' — an oft-cited detail from ESPN's survey reporting.",
+  "Pittsburgh Steelers|Home Game Field": "Graded F- 'by a wide margin' per ESPN. Players cite inadequate maintenance and use of the field by local college and high school teams.",
+  "Pittsburgh Steelers|Team Travel": "Received an F, one of three teams — along with Philadelphia and New England — to receive a failing travel grade.",
+  "Pittsburgh Steelers|Treatment of Families": "F grade. Along with Cincinnati's F- and Cleveland's D-, it reflects a chronic pattern of under-investment at the bottom of the AFC North.",
+  "Pittsburgh Steelers|Team Ownership": "Art Rooney II received a D-, the second-worst ownership grade. Only Arizona's Michael Bidwill scored worse (F).",
+  "Pittsburgh Steelers|General Manager": "Omar Khan tied 29th, just above the Browns, Bengals and Giants — the weakest cluster of GM scores in the league.",
+  "Cincinnati Bengals|Treatment of Families": "Received an F-. Agents report players are factoring this into free-agency decisions about Cincinnati.",
+  "Cincinnati Bengals|Food/Dining Area": "Received an F-. Along with Treatment of Families, players flagged these as significant deterrents to signing with Cincinnati.",
+  "Cincinnati Bengals|Nutritionist/Dietician": "Received an F, the only team in the league to receive a failing nutrition grade.",
+  "Arizona Cardinals|Team Ownership": "Michael Bidwill received an F — the worst ownership grade in the league, contrasting sharply with the team's B+ head coach score.",
   "Arizona Cardinals|Treatment of Families": "Graded D+, among the worst in the league alongside Tampa Bay, Cleveland, and Pittsburgh.",
-
-  // Cleveland Browns
   "Cleveland Browns|Locker Room": "Received an F, one of only three teams — along with the Steelers and Chiefs — to receive a failing locker room grade.",
   "Cleveland Browns|Head Coach": "Kevin Stefanski graded C- from his players, one of the lowest head coach scores in the survey.",
-  "Cleveland Browns|Offensive Coordinator": "Tommy Rees received a D+, one of the worst coordinator grades across the league.",
+  "Cleveland Browns|Offensive Coordinator": "Ken Dorsey received a D+, one of the worst coordinator grades across the league.",
   "Cleveland Browns|Special Teams Coordinator": "Bubba Ventrone received a D, reflecting broader dissatisfaction with the coaching staff.",
   "Cleveland Browns|Treatment of Families": "Graded D-, one of the poorest marks in the league alongside Tampa Bay and Pittsburgh.",
   "Cleveland Browns|Team Travel": "Graded D-, among the worst travel scores across all 32 teams.",
-
-  // Kansas City Chiefs
   "Kansas City Chiefs|Locker Room": "Received an F — a surprising result for a team that has won multiple Super Bowls in recent years.",
   "Kansas City Chiefs|Team Travel": "Graded D-, among the worst in the league, despite the team's on-field success.",
-
-  // Las Vegas Raiders
-  "Las Vegas Raiders|Offensive Coordinator": "Chip Kelly received an F — the only coordinator in the league to receive a failing grade. Kelly was fired after 11 games amid reported friction with head coach Pete Carroll.",
-  "Las Vegas Raiders|Head Coach": "Pete Carroll graded C+, with players also rating DC Patrick Graham (C) and ST coordinator Tom McMahon (C-) poorly — providing context for the full coaching staff overhaul this offseason.",
-
-  // New England Patriots
+  "Las Vegas Raiders|Offensive Coordinator": "Chip Kelly received an F — the only coordinator in the league to receive a failing grade. Kelly was fired after 11 games.",
+  "Las Vegas Raiders|Head Coach": "Pete Carroll graded C+, with players also rating DC Patrick Graham (C) and ST coordinator Tom McMahon (C-) poorly.",
   "New England Patriots|Team Travel": "Received an F, one of three teams to receive a failing travel grade alongside Pittsburgh and Philadelphia.",
-
-  // Philadelphia Eagles
   "Philadelphia Eagles|Team Travel": "Received an F, one of three teams to receive a failing travel grade alongside Pittsburgh and New England.",
-
-  // New York Giants
   "New York Giants|General Manager": "Joe Schoen received a D+, the lowest GM grade in the entire survey.",
   "New York Giants|Home Game Field": "Graded F-, sharing MetLife Stadium with the Jets — both received the league's lowest field grade.",
-
-  // New York Jets
   "New York Jets|Home Game Field": "Graded F-, sharing MetLife Stadium with the Giants — both received the league's lowest field grade.",
-
-  // Seattle Seahawks
   "Seattle Seahawks|Home Game Field": "Graded F, one of seven teams to receive a failing field grade. The Seahawks rank 4th overall despite this.",
-
-  // Buffalo Bills
-  "Buffalo Bills|Home Game Field": "Graded F, one of seven teams to receive a failing field grade. The Bills are currently building a new stadium with a new surface.",
-
-  // Tennessee Titans
-  "Tennessee Titans|Home Game Field": "Graded F-, one of the worst field grades in the league. The Titans are building a new stadium that will feature a new surface.",
-
-  // Carolina Panthers
+  "Buffalo Bills|Home Game Field": "Graded F, one of seven teams to receive a failing field grade. A new stadium with a natural surface is under construction.",
+  "Tennessee Titans|Home Game Field": "Graded F-, one of the worst field grades in the league. A new stadium is under construction.",
   "Carolina Panthers|Home Game Field": "Received an F, one of seven teams to receive a failing field grade despite ranking 23rd overall.",
-
-  // Denver Broncos
-  "Denver Broncos|Team Ownership": "Received an A+, one of only 15 A+ grades awarded across the entire league. A sharp contrast to the bottom-tier ownership grades.",
-
-  // Baltimore Ravens
-  "Baltimore Ravens|Team Ownership": "Received an A+, one of the highest possible grades, reflecting strong player satisfaction with Steve Bisciotti's investment.",
-
-  // Minnesota Vikings
+  "Denver Broncos|Team Ownership": "Received an A+, one of only 15 A+ grades awarded across the entire league.",
+  "Baltimore Ravens|Team Ownership": "Received an A+, reflecting strong player satisfaction with Steve Bisciotti's investment in facilities and roster.",
   "Minnesota Vikings|Team Ownership": "Received an A+. The Vikings were rated 2nd overall, with players giving high marks across nearly every category.",
   "Minnesota Vikings|General Manager": "Kwesi Adofo-Mensah received an A from players — notable as the survey was completed before his firing and move to the 49ers.",
-
-  // Washington Commanders
   "Washington Commanders|Strength Coaches": "Received an A+, one of only 15 A+ grades given across the league.",
   "Washington Commanders|Head Coach": "Dan Quinn received an A+, one of the highest head coach grades in the survey.",
   "Washington Commanders|Team Ownership": "Received an A+. Washington finished 3rd overall, with ownership one of three A+ grades the Commanders received.",
-
-  // Miami Dolphins
-  "Miami Dolphins|Strength Coaches": "Received an A+. The Dolphins ranked 1st overall for the third consecutive year, leading the league in player satisfaction.",
-  "Miami Dolphins|Weight Room": "Received an A+. The Dolphins consistently earned top marks for their facility quality and player investment.",
+  "Miami Dolphins|Strength Coaches": "Received an A+. The Dolphins ranked 1st overall for the third consecutive year.",
+  "Miami Dolphins|Weight Room": "Received an A+. The Dolphins consistently earned top marks for facility quality and player investment.",
 };
 
 const TEAMS = [
@@ -401,8 +562,8 @@ const TEAMS = [
   {n:'Jacksonville Jaguars',   o:5,  g:{'Treatment of Families':'B+','Home Game Field':'B+','Food/Dining Area':'B+','Nutritionist/Dietician':'A-','Locker Room':'A-','Training Room':'A','Training Staff':'A-','Weight Room':'A','Strength Coaches':'A','Position Coaches':'C','Offensive Coordinator':'B+','Defensive Coordinator':'A','Special Teams Coordinator':'A+','Team Travel':'B+','Head Coach':'A-','General Manager':'A-','Team Ownership':'A'}},
   {n:'Kansas City Chiefs',     o:27, g:{'Treatment of Families':'C','Home Game Field':'A-','Food/Dining Area':'C+','Nutritionist/Dietician':'A-','Locker Room':'F','Training Room':'C-','Training Staff':'C','Weight Room':'B','Strength Coaches':'B+','Position Coaches':'C+','Offensive Coordinator':'C+','Defensive Coordinator':'A','Special Teams Coordinator':'B','Team Travel':'D-','Head Coach':'A','General Manager':'B+','Team Ownership':'C+'}},
   {n:'Las Vegas Raiders',      o:6,  g:{'Treatment of Families':'A','Home Game Field':'A-','Food/Dining Area':'A','Nutritionist/Dietician':'A','Locker Room':'A','Training Room':'A','Training Staff':'A','Weight Room':'A+','Strength Coaches':'A','Position Coaches':'C+','Offensive Coordinator':'F','Defensive Coordinator':'C','Special Teams Coordinator':'C-','Team Travel':'B','Head Coach':'C+','General Manager':'A-','Team Ownership':'A'}},
-  {n:'Los Angeles Chargers',   o:15, g:{'Treatment of Families':'C+','Home Game Field':'C','Food/Dining Area':'B+','Nutritionist/Dietician':'A-','Locker Room':'A-','Training Room':'A-','Training Staff':'A-','Weight Room':'A-','Strength Coaches':'B','Position Coaches':'C+','Offensive Coordinator':'D-','Defensive Coordinator':'A+','Special Teams Coordinator':'A-','Team Travel':'B-','Head Coach':'C+','General Manager':'B+','Team Ownership':'A-'}},
-  {n:'Los Angeles Rams',       o:19, g:{'Treatment of Families':'C+','Home Game Field':'C','Food/Dining Area':'D','Nutritionist/Dietician':'B','Locker Room':'D','Training Room':'B','Training Staff':'A','Weight Room':'B','Strength Coaches':'A','Position Coaches':'A','Offensive Coordinator':'A','Defensive Coordinator':'A','Special Teams Coordinator':'B+','Team Travel':'B','Head Coach':'A+','General Manager':'A','Team Ownership':'B'}},
+  {n:'LA Chargers',            o:15, g:{'Treatment of Families':'C+','Home Game Field':'C','Food/Dining Area':'B+','Nutritionist/Dietician':'A-','Locker Room':'A-','Training Room':'A-','Training Staff':'A-','Weight Room':'A-','Strength Coaches':'B','Position Coaches':'C+','Offensive Coordinator':'D-','Defensive Coordinator':'A+','Special Teams Coordinator':'A-','Team Travel':'B-','Head Coach':'C+','General Manager':'B+','Team Ownership':'A-'}},
+  {n:'LA Rams',                o:19, g:{'Treatment of Families':'C+','Home Game Field':'C','Food/Dining Area':'D','Nutritionist/Dietician':'B','Locker Room':'D','Training Room':'B','Training Staff':'A','Weight Room':'B','Strength Coaches':'A','Position Coaches':'A','Offensive Coordinator':'A','Defensive Coordinator':'A','Special Teams Coordinator':'B+','Team Travel':'B','Head Coach':'A+','General Manager':'A','Team Ownership':'B'}},
   {n:'Miami Dolphins',         o:1,  g:{'Treatment of Families':'B+','Home Game Field':'A-','Food/Dining Area':'A','Nutritionist/Dietician':'A-','Locker Room':'A-','Training Room':'A','Training Staff':'A','Weight Room':'A+','Strength Coaches':'A+','Position Coaches':'A-','Offensive Coordinator':'A-','Defensive Coordinator':'A','Special Teams Coordinator':'B','Team Travel':'A','Head Coach':'B','General Manager':'A-','Team Ownership':'A'}},
   {n:'Minnesota Vikings',      o:2,  g:{'Treatment of Families':'A','Home Game Field':'B','Food/Dining Area':'B-','Nutritionist/Dietician':'B+','Locker Room':'A','Training Room':'A-','Training Staff':'A-','Weight Room':'A-','Strength Coaches':'A','Position Coaches':'B+','Offensive Coordinator':'A-','Defensive Coordinator':'B+','Special Teams Coordinator':'A-','Team Travel':'B+','Head Coach':'A','General Manager':'A','Team Ownership':'A+'}},
   {n:'New England Patriots',   o:26, g:{'Treatment of Families':'B','Home Game Field':'D','Food/Dining Area':'D+','Nutritionist/Dietician':'B','Locker Room':'C-','Training Room':'C-','Training Staff':'B','Weight Room':'C-','Strength Coaches':'A-','Position Coaches':'B-','Offensive Coordinator':'A','Defensive Coordinator':'B','Special Teams Coordinator':'B+','Team Travel':'F','Head Coach':'A','General Manager':'B+','Team Ownership':'B-'}},
@@ -420,42 +581,64 @@ const TEAMS = [
 
 function gv(g) { const i = GRADE_ORDER.indexOf(g); return i === -1 ? 99 : i; }
 
-let sortKey = 'overall';
-let sortAsc = true;
+// ── LOGO HELPER ───────────────────────────────────────────────────────────────
+function logoImg(name, cls) {
+  const src = LOGOS[name] || '';
+  return src ? `<img class="${cls}" src="${src}" alt="" onerror="this.style.display='none'">` : '';
+}
+
+// ── DESKTOP TABLE ─────────────────────────────────────────────────────────────
+let sortKey = 'overall', sortAsc = true;
 
 function renderTable(rows) {
   const hr = document.getElementById('headerRow');
   const tb = document.getElementById('tableBody');
+  if(!hr) return;
 
   hr.innerHTML = `
     <th class="team-header">
       <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">TEAM</span>
     </th>
     <th style="width:36px;cursor:pointer;color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;"
-        data-cat="overall"
-        onclick="colSort('overall')"
-        onmouseleave="hideTip()">RNK</th>
+        data-cat="overall" onclick="colSort('overall')" onmouseleave="hideTip()">RNK</th>
     ${CATS.map(c => `
       <th onclick="colSort('${c}')" data-cat="${c}" onmouseleave="hideTip()">
         <div class="col-header-inner">${SHORT[c]}</div>
       </th>`).join('')}`;
 
   tb.innerHTML = rows.map(t => {
-    const rc = t.o <= 5 ? '#00c853' : t.o >= 28 ? '#e83f10' : 'var(--muted)';
+    const rc = t.o <= 5 ? '#1a7a3a' : t.o >= 28 ? '#a81000' : '#6a6a7a';
     const cells = CATS.map(c => {
       const gr = t.g[c] || '—';
-      const bg = GC[gr] || '#1a1a2e';
-      const tx = GT[gr] || '#fff';
+      const bg = GC[gr] || '#e8e8e4';
+      const tx = GT[gr] || '#333';
       return `<td class="grade-cell" style="background:${bg};color:${tx};"
         data-t="${t.n}" data-c="${c}" data-g="${gr}"
         onmouseenter="cellTip(event,this)" onmouseleave="hideTip()">${gr}</td>`;
     }).join('');
     return `<tr>
-      <td class="team-cell">${t.n}</td>
+      <td class="team-cell">
+        <div class="team-inner">
+          ${logoImg(t.n, 'team-logo')}
+          ${t.n}
+        </div>
+      </td>
       <td class="rank-cell" style="color:${rc};">${t.o}</td>
       ${cells}
     </tr>`;
   }).join('');
+
+  // header hover listeners
+  document.querySelectorAll('#headerRow th[data-cat]').forEach(th => {
+    th.addEventListener('mouseenter', e => {
+      const cat = th.dataset.cat;
+      const title = cat === 'overall' ? 'Overall Rank' : cat;
+      const desc = cat === 'overall'
+        ? 'The team\'s overall rank across all 17 categories combined. 1 = best, 32 = worst.'
+        : (DESC[cat] || cat);
+      colTip(e, title, desc);
+    });
+  });
 }
 
 function colSort(key) {
@@ -472,41 +655,33 @@ function doSort() {
     return sortAsc ? av - bv : bv - av;
   });
   renderTable(s);
-  // re-attach th hover listeners
-  document.querySelectorAll('#headerRow th[data-cat]').forEach(th => {
-    th.addEventListener('mouseenter', e => {
-      const cat = th.dataset.cat;
-      const title = cat === 'overall' ? 'Overall Rank' : cat;
-      const desc = cat === 'overall'
-        ? 'The team\'s overall rank across all 17 categories combined. 1 = best, 32 = worst.'
-        : (DESC[cat] || cat);
-      colTip(e, title, desc);
-    });
-  });
+  renderMobile(s);
 }
 
 document.getElementById('sortSelect').addEventListener('change', function() {
   sortKey = this.value; sortAsc = true; doSort();
 });
 
-// tooltip
+// ── TOOLTIP ────────────────────────────────────────────────────────────────────
 const TT = document.getElementById('tooltip');
 function moveTip(e) {
   const x = e.clientX + 14, y = e.clientY - 8;
-  TT.style.left = Math.min(x, window.innerWidth - (TT.offsetWidth||220) - 8) + 'px';
-  TT.style.top  = Math.min(y, window.innerHeight - (TT.offsetHeight||100) - 8) + 'px';
+  TT.style.left = Math.min(x, window.innerWidth - (TT.offsetWidth||240) - 8) + 'px';
+  TT.style.top  = Math.min(y, window.innerHeight - (TT.offsetHeight||120) - 8) + 'px';
 }
 function cellTip(e, el) {
-  const g = el.dataset.g;
-  const team = el.dataset.t;
-  const cat = el.dataset.c;
+  const g = el.dataset.g, team = el.dataset.t, cat = el.dataset.c;
   document.getElementById('tipTitle').textContent = team;
   document.getElementById('tipSub').textContent = cat;
   document.getElementById('tipGrade').textContent = g;
-  document.getElementById('tipGrade').style.color = GC[g] || '#fff';
+  document.getElementById('tipGrade').style.color = GC[g] ? 'var(--text)' : '#888';
+  // Show grade with a background swatch feel
+  document.getElementById('tipGrade').style.background = GC[g] || 'transparent';
+  document.getElementById('tipGrade').style.color = GT[g] || '#333';
+  document.getElementById('tipGrade').style.padding = '2px 10px';
+  document.getElementById('tipGrade').style.borderRadius = '4px';
+  document.getElementById('tipGrade').style.display = 'inline-block';
   document.getElementById('tipDesc').textContent = DESC[cat] || '';
-
-  // Show sourced comment if available
   const commentKey = team + '|' + cat;
   const comment = COMMENTS[commentKey];
   const divider = document.getElementById('tipDivider');
@@ -523,20 +698,114 @@ function cellTip(e, el) {
     commentEl.style.display = 'none';
     sourceEl.style.display = 'none';
   }
-
   TT.style.display = 'block'; moveTip(e);
 }
 function colTip(e, name, desc) {
   document.getElementById('tipTitle').textContent = name;
   document.getElementById('tipSub').textContent = 'Survey Category';
   document.getElementById('tipGrade').textContent = '';
+  document.getElementById('tipGrade').style.background = 'transparent';
+  document.getElementById('tipGrade').style.padding = '0';
   document.getElementById('tipDesc').textContent = desc;
+  document.getElementById('tipDivider').style.display = 'none';
+  document.getElementById('tipComment').style.display = 'none';
+  document.getElementById('tipSource').style.display = 'none';
   TT.style.display = 'block'; moveTip(e);
 }
 function hideTip() { TT.style.display = 'none'; }
 document.addEventListener('mousemove', e => { if (TT.style.display==='block') moveTip(e); });
 
-doSort();
+// ── MOBILE CARDS ──────────────────────────────────────────────────────────────
+function renderMobile(rows) {
+  const mv = document.getElementById('mobile-view');
+  if(!mv) return;
+  if(window.innerWidth > 768) { mv.innerHTML=''; return; }
+
+  const dirArrow = sortAsc ? '↑ Best first' : '↓ Worst first';
+  const dirLabel = sortKey === 'overall'
+    ? (sortAsc ? '↑ #1 first' : '↓ #32 first')
+    : (sortAsc ? '↑ Best first' : '↓ Worst first');
+
+  mv.innerHTML = `
+    <div style="padding:12px 12px 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border);">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;">Sort:</span>
+      <select id="mobileSortSelect" style="flex:1;min-width:0;font-size:13px;padding:7px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);">
+        <option value="overall" ${sortKey==='overall'?'selected':''}>Overall Rank</option>
+        ${CATS.map(c=>`<option value="${c}" ${sortKey===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+      <button id="mobileDirBtn"
+        onclick="mobileToggleDir()"
+        style="flex-shrink:0;font-family:'DM Mono',monospace;font-size:11px;padding:7px 11px;border:1px solid var(--border);border-radius:6px;background:var(--accent-light);color:var(--accent);cursor:pointer;white-space:nowrap;letter-spacing:0.5px;">
+        ${dirLabel}
+      </button>
+    </div>
+    <div style="padding:10px 12px 40px;">
+      ${rows.map(t => {
+        const rc = t.o <= 5 ? '#1a7a3a' : t.o >= 28 ? '#a81000' : '#6a6a7a';
+
+        // Badge shown in collapsed header: sort metric grade (or rank if overall)
+        let headerBadge = '';
+        if (sortKey === 'overall') {
+          headerBadge = `<span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${rc};margin-right:2px;line-height:1">${t.o}</span>`;
+        } else {
+          const gr = t.g[sortKey] || '—';
+          const bg = GC[gr] || '#e8e8e4';
+          const tx = GT[gr] || '#333';
+          headerBadge = `<span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;padding:3px 9px;border-radius:5px;background:${bg};color:${tx};line-height:1;white-space:nowrap;">${gr}</span>`;
+        }
+
+        return `<div class="team-card" id="card-${t.n.replace(/[\s']/g,'-')}">
+          <div class="team-card-header" onclick="toggleCard('${t.n.replace(/[\s']/g,'-')}')">
+            ${logoImg(t.n,'mobile-team-logo')}
+            <span class="team-card-name">${t.n}</span>
+            ${headerBadge}
+            <span class="card-chevron">▼</span>
+          </div>
+          <div class="team-card-grades">
+            ${CATS.map(c => {
+              const gr = t.g[c] || '—';
+              const bg = GC[gr] || '#e8e8e4';
+              const tx = GT[gr] || '#333';
+              const isActive = c === sortKey;
+              return `<div class="mobile-grade-row" style="${isActive ? 'background:rgba(196,120,0,0.07);border-radius:4px;margin:0 -4px;padding:6px 4px;' : ''}">
+                <span class="mobile-cat-name" style="${isActive ? 'color:var(--accent);font-weight:600;' : ''}">${c}</span>
+                <span class="mobile-grade-pill" style="background:${bg};color:${tx};${isActive ? 'box-shadow:0 0 0 2px var(--accent);' : ''}">${gr}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  document.getElementById('mobileSortSelect').addEventListener('change', function() {
+    sortKey = this.value; sortAsc = true; doSort();
+  });
+}
+
+function mobileToggleDir() {
+  sortAsc = !sortAsc;
+  doSort();
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  if(card) card.classList.toggle('expanded');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function init() {
+  doSort();
+}
+init();
+
+// Re-render on resize (switch between mobile/desktop)
+let lastW = window.innerWidth;
+window.addEventListener('resize', () => {
+  if(Math.abs(window.innerWidth - lastW) > 50) {
+    lastW = window.innerWidth;
+    doSort();
+  }
+});
 </script>
 </body>
 </html>
